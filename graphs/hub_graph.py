@@ -16,7 +16,7 @@ Architecture:
 
 import json
 import logging
-from langchain_anthropic import ChatAnthropic
+from langchain_openai import ChatOpenAI
 from langchain_core.messages import HumanMessage, SystemMessage, AIMessage
 from langgraph.graph import StateGraph, START, END
 
@@ -31,13 +31,13 @@ logger = logging.getLogger(__name__)
 # LLM clients
 # ---------------------------------------------------------------------------
 
-_base_llm = ChatAnthropic(model=MODEL_NAME, max_tokens=MAX_TOKENS)
-_forge_llm = ChatAnthropic(model=MODEL_NAME, max_tokens=FORGE_MAX_TOKENS)
-_router_llm = ChatAnthropic(model=MODEL_NAME, max_tokens=256)
+_base_llm = ChatOpenAI(model=MODEL_NAME, max_tokens=MAX_TOKENS)
+_forge_llm = ChatOpenAI(model=MODEL_NAME, max_tokens=FORGE_MAX_TOKENS)
+_router_llm = ChatOpenAI(model=MODEL_NAME, max_tokens=256)
 
 
 # ---------------------------------------------------------------------------
-# Helper: build message list for Claude API call
+# Helper: build message list for OpenAI API call
 # ---------------------------------------------------------------------------
 
 def _build_messages(system_prompt: str, state: HubState) -> list:
@@ -58,7 +58,7 @@ def _build_messages(system_prompt: str, state: HubState) -> list:
 def router_node(state: HubState) -> dict:
     """
     Reads the latest user message and routes to the correct agent.
-    Uses a lightweight Claude call that returns structured JSON.
+    Uses a lightweight GPT-4o call that returns structured JSON.
     """
     latest_user_msg = ""
     for m in reversed(state["messages"]):
@@ -103,7 +103,7 @@ def router_node(state: HubState) -> dict:
 def _make_agent_node(agent_name: str):
     """
     Returns a LangGraph node function for the given agent.
-    Each agent calls Claude with its specific system prompt + conversation history.
+    Each agent calls GPT-4o with its specific system prompt + conversation history.
     """
     system_prompt = AGENT_PROMPTS[agent_name]
     llm = _forge_llm if agent_name == "forge" else _base_llm

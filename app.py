@@ -30,7 +30,7 @@ from agents.escalation import detect_escalation
 from graphs.hub_graph import hub_graph
 from config.settings import MODEL_NAME, MAX_TOKENS, FORGE_MAX_TOKENS
 
-from langchain_anthropic import ChatAnthropic
+from langchain_openai import ChatOpenAI
 from langchain_core.messages import SystemMessage as LCSystemMessage
 
 logging.basicConfig(level=logging.INFO)
@@ -53,7 +53,7 @@ app = FastAPI(
     title="PragMind Agentic Hub",
     description=(
         "Five specialised AI agents for PragMind AI — Dubai. "
-        "Powered by LangGraph + Claude Sonnet 4."
+        "Powered by LangGraph + GPT-4o."
     ),
     version="1.0.0",
     lifespan=lifespan,
@@ -225,7 +225,7 @@ async def run_agent(request: RunAgentRequest):
 
     # Select LLM (Forge gets larger context window)
     max_tok = FORGE_MAX_TOKENS if agent_name == "forge" else MAX_TOKENS
-    llm = ChatAnthropic(model=MODEL_NAME, max_tokens=max_tok)
+    llm = ChatOpenAI(model=MODEL_NAME, max_tokens=max_tok)
 
     messages = [LCSystemMessage(content=system_prompt)] + lc_history
 
