@@ -3,6 +3,7 @@ PragMind Agentic Hub — FastAPI Application
 ==========================================
 Endpoints:
 
+  GET  /                       — Root endpoint (API info)
   POST /agents/run          — Run a specific agent directly (bypass router)
   POST /hub/run             — Send a message to the hub; router selects the agent
   GET  /agents              — List all 5 agents with metadata
@@ -178,6 +179,22 @@ def _build_escalation_flag(triggered: bool, phrase: str | None, esc_type: str | 
 # ---------------------------------------------------------------------------
 # Endpoints
 # ---------------------------------------------------------------------------
+
+@app.get("/")
+async def root():
+    return {
+        "status": "online",
+        "service": "PragMind Agentic Hub",
+        "version": "1.0.0",
+        "model": MODEL_NAME,
+        "endpoints": {
+            "health": "GET /health",
+            "agents": "GET /agents",
+            "run_agent": "POST /agents/run",
+            "hub_run": "POST /hub/run",
+        }
+    }
+
 
 @app.get("/health")
 async def health():
