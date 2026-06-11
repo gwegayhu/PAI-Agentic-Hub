@@ -6,7 +6,7 @@ from dotenv import load_dotenv
 load_dotenv()
 
 # LLM Configuration
-MODEL_NAME = os.getenv("MODEL_NAME", "claude-3-5-sonnet-20241022")
+MODEL_NAME = os.getenv("MODEL_NAME", "gpt-4o")
 MAX_TOKENS = int(os.getenv("MAX_TOKENS", "4096"))
 FORGE_MAX_TOKENS = int(os.getenv("FORGE_MAX_TOKENS", "16000"))
 
